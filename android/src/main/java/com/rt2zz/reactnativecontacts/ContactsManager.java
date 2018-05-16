@@ -405,6 +405,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         String company = contact.hasKey("company") ? contact.getString("company") : null;
         String jobTitle = contact.hasKey("jobTitle") ? contact.getString("jobTitle") : null;
         String department = contact.hasKey("department") ? contact.getString("department") : null;
+        String notes = contact.hasKey("notes") ? contact.getString("notes") : null;
 
         ReadableArray phoneNumbers = contact.hasKey("phoneNumbers") ? contact.getArray("phoneNumbers") : null;
         int numOfPhones = 0;
@@ -522,6 +523,13 @@ public class ContactsManager extends ReactContextBaseJavaModule {
                 ops.add(op.build());
             }
         }
+
+        op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+                .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + " = ?", new String[]{String.valueOf(recordID), CommonDataKinds.Note.CONTENT_ITEM_TYPE})
+                //.withValue(ContactsContract.Data.MIMETYPE, CommonDataKinds.Note.CONTENT_ITEM_TYPE)
+                .withValue(CommonDataKinds.Note.NOTE, notes);
+        ops.add(op.build());
+
 
         Context ctx = getReactApplicationContext();
         try {

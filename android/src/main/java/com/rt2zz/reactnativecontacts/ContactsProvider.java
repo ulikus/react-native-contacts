@@ -65,6 +65,7 @@ public class ContactsProvider {
         add(StructuredPostal.COUNTRY);
         add(Event.START_DATE);
         add(Event.TYPE);
+        add(ContactsContract.CommonDataKinds.Note.NOTE);
     }};
 
     private static final List<String> FULL_PROJECTION = new ArrayList<String>() {{
@@ -133,8 +134,14 @@ public class ContactsProvider {
             Cursor cursor = contentResolver.query(
                     ContactsContract.Data.CONTENT_URI,
                     FULL_PROJECTION.toArray(new String[FULL_PROJECTION.size()]),
-                    ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE + "=?",
-                    new String[]{Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE, StructuredName.CONTENT_ITEM_TYPE, Organization.CONTENT_ITEM_TYPE, StructuredPostal.CONTENT_ITEM_TYPE, Event.CONTENT_ITEM_TYPE},
+                    ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE +
+                            "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR " + ContactsContract.Data.MIMETYPE +
+                            "=? OR " + ContactsContract.Data.MIMETYPE + "=? OR "+ ContactsContract.Data.MIMETYPE +
+                            "=? OR " + ContactsContract.Data.MIMETYPE + "=? ",
+                    new String[]{Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE,
+                            StructuredName.CONTENT_ITEM_TYPE, Organization.CONTENT_ITEM_TYPE,
+                            StructuredPostal.CONTENT_ITEM_TYPE, Event.CONTENT_ITEM_TYPE,
+                            ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE},
                     null
             );
 
@@ -294,6 +301,9 @@ public class ContactsProvider {
                             if (year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
                                 contact.birthday = new Contact.Birthday(year, month, day);
                             }
+                        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)) {
+                            contact.notes = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
+
                         }
                     } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                         // whoops, birthday isn't in the format we expect
@@ -348,6 +358,8 @@ public class ContactsProvider {
         private List<Item> phones = new ArrayList<>();
         private List<PostalAddressItem> postalAddresses = new ArrayList<>();
         private Birthday birthday;
+        private String notes = "";
+
 
 
         public Contact(String contactId) {
@@ -366,6 +378,7 @@ public class ContactsProvider {
             contact.putString("company", company);
             contact.putString("jobTitle", jobTitle);
             contact.putString("department", department);
+            contact.putString("notes", notes);
             contact.putBoolean("hasThumbnail", this.hasPhoto);
             contact.putString("thumbnailPath", photoUri == null ? "" : photoUri);
 
