@@ -357,9 +357,6 @@ public class ContactsProvider {
                             if (year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
                                 contact.birthday = new Contact.Birthday(year, month, day);
                             }
-                        } else if (mimeType.equals(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)) {
-                            contact.notes = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
-
                         }
                     } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                         // whoops, birthday isn't in the format we expect
@@ -367,6 +364,9 @@ public class ContactsProvider {
 
                     }
                 }
+            } else if (mimeType.equals(ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE)) {
+                contact.notes = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
+
             }
         }
 
