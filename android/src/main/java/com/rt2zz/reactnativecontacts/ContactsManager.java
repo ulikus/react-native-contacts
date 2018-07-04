@@ -400,7 +400,8 @@ public class ContactsManager extends ReactContextBaseJavaModule {
         }
 
         op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                .withSelection(ContactsContract.Data.CONTACT_ID + "=? AND " + ContactsContract.Data.MIMETYPE + " = ?", new String[]{String.valueOf(recordID), CommonDataKinds.Note.CONTENT_ITEM_TYPE})
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, CommonDataKinds.Note.CONTENT_ITEM_TYPE)
                 .withValue(CommonDataKinds.Note.NOTE, notes);
         ops.add(op.build());
 
