@@ -399,7 +399,7 @@ public class ContactsManager extends ReactContextBaseJavaModule {
             }
         }
 
-        op = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+        op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
                 .withValue(ContactsContract.Data.MIMETYPE, CommonDataKinds.Note.CONTENT_ITEM_TYPE)
                 .withValue(CommonDataKinds.Note.NOTE, notes);
